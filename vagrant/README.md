@@ -254,7 +254,7 @@ In case a step fails in the Ansible playbook, you can ssh to the box and run it
 again using this command:
 
 ```
-ansible-playbook -c local --extra-vars=ansible_ssh_user='vagrant' --inventory-file=/provision/hosts \
+ansible-playbook -c local --extra-vars=ansible_user='vagrant' --inventory-file=/provision/hosts \
    -v --private-key=~/.vagrant.d/insecure_private_key \
    --limit=ci-node /provision/buildserver.yml
 ```

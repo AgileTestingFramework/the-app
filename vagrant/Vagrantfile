@@ -98,7 +98,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         s.privileged     = false
         s.args           = ["--inventory-file=hosts",
                             ansible_limit,
-                            "--extra-vars='ansible_ssh_user=vagrant'",
+                            "--extra-vars='ansible_user=vagrant'",
                             "--user=vagrant",
                             node['playbook']]
       end
