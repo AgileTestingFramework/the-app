@@ -76,7 +76,7 @@ in the [overview](https://github.com/devops-dojo/the-app/#overview).
 
 You need some dependencies to run the application cluster or to add your own services to the showcase application.
 
-###Running
+### Running
 
 See [vagrant directory](/vagrant) on installing the cluster of machines to run the application and the continuous delivery pipeline. You need at least 16 GB RAM to run the whole cluster in one machine (local virtualbox) or leverage the Azure cloud installer to have different VMs for each function.
 
@@ -85,7 +85,7 @@ If you just want to run the application, use Docker: [Docker](/compose/README.md
 
 ## The application
 
-###Microservice Appserver
+### Microservice Appserver
 
 The microservice based online shop is deployed on the microservice appserver
 which is a reference implementation for the given use cases in the
@@ -107,7 +107,7 @@ cart which was created in the AngularJS Catalog Frontend can be order with the
 checkout of the Wicket online shop on the monolith appserver.
 
 
-###Monolith Appserver
+### Monolith Appserver
 
 The monolith online shop is deployed on the Monolith Appserver which is a
 reference implementation for the given use cases in the
