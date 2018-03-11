@@ -13,12 +13,12 @@
   notify: restart rng-tools
 
 - name: create gnupg directory
-  sudo: yes
+  become: yes
   sudo_user: root
   file: path=/root/.gnupg/ state=directory force=yes
 
 - copy: src={{item}} dest=/root/.gnupg/{{item}} force=yes mode=0644
-  sudo: yes
+  become: yes
   sudo_user: root
   with_items:
       - gpg.conf
@@ -28,7 +28,7 @@
       - trustdb.gpg
 
 - name: create deb repository
-  sudo: yes
+  become: yes
   sudo_user: root
   file: path=/var/packages/debian/conf state=directory force=yes
 
@@ -44,12 +44,12 @@
     path: /var/packages/ci-repo.gpg.key
   register: st
 
-- sudo: yes
+- become: yes
   sudo_user: root
   raw: gpg --armor --output /var/packages/ci-repo.gpg.key --export 18858766
   when: (st.stat.exists is defined and st.stat.exists == false) or st.stat.exists is not defined
 
-- sudo: yes
+- become: yes
   sudo_user: root
   raw: reprepro -b /var/packages/debian/ export
 

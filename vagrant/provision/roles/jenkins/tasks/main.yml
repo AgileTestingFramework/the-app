@@ -77,7 +77,7 @@
   become_user: jenkins
   when: with_proxy
 
-- sudo: yes
+- become: yes
   sudo_user: root
   npm: name={{item}} global=yes
   with_items:
@@ -90,13 +90,13 @@
 - raw: sudo gem install compass
 
 - name: install Jenkins proxy config if necessary
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   copy: src=proxy.xml dest=/var/lib/jenkins/proxy.xml owner=jenkins
   when: with_proxy
   notify: restart jenkins
 - name: Tune Jenkins proxy per global variable
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   blockinfile:
     dest: /var/lib/jenkins/proxy.xml
@@ -111,12 +111,12 @@
   file: path=/var/lib/jenkins/.gradle state=directory owner=jenkins
 
 - name: install gradle.properties with proxy if necessary
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   copy: src=gradle.properties dest=/var/lib/jenkins/.gradle/gradle.properties owner=jenkins
   when: with_proxy
 - name: Tune gradle proxy per global variable
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   blockinfile:
     dest: /var/lib/jenkins/.gradle/gradle.properties
@@ -139,18 +139,18 @@
     state: absent
 
 - name: create init groovy directory
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   file: path="/var/lib/jenkins/init.groovy.d/" state=directory
 
 - name: provision Jenkins admin and anonymous users
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   copy: src=basic-security.groovy dest=/var/lib/jenkins/init.groovy.d/basic-security owner=jenkins
   notify: restart jenkins
 
 - name: install config.xml
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   copy: src={{item}} dest=/var/lib/jenkins/{{item}} owner=jenkins
   with_items:
@@ -162,7 +162,7 @@
   notify: restart jenkins
 
 - name: Tune GIT repository and branch per global variable
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   blockinfile:
     dest: /var/lib/jenkins/config.xml
@@ -181,17 +181,17 @@
 - wait_for: port=8080 timeout=300 delay=30
 
 - name: download jenkins update-center.js
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   get_url: url=http://updates.jenkins-ci.org/update-center.json dest=/tmp/update-center.js owner=jenkins
 
 - name: remove first and last line javascript wrapper
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   raw:  sed '1d;$d' /tmp/update-center.js > /tmp/update-center.json
 
 - name: push it to the update URL
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   raw:  'curl -X POST -H "Accept: application/json" -d @/tmp/update-center.json http://localhost:8080/updateCenter/byId/default/postBack'
 
@@ -199,12 +199,12 @@
 - wait_for: port=8080 timeout=300 delay=30
 
 - name: download jenkins cli
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   get_url: url=http://localhost:8080/jnlpJars/jenkins-cli.jar dest=/tmp/jenkins-cli.jar owner=jenkins
 
 - name: install jenkins plugins
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   raw:  java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ install-plugin {{item}}
   with_items:
@@ -227,7 +227,7 @@
   ignore_errors: True
 
 - name: restart jenkins
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   raw:  java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ restart
 
@@ -237,17 +237,17 @@
 - file: dest=/var/lib/jenkins/repo-cache/appstash mode=0755 owner=jenkins group=jenkins state=directory
 
 - name: get GIT repository
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   git: repo={{github_url}} dest=/var/lib/jenkins/repo-cache/appstash bare=yes version=master
 
 - name: Setup cron job to update GIT repository automatically
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   cron: name="Update AppStash Git Repository" minute="*/60" job="cd /var/lib/jenkins/repo-cache/appstash; git fetch origin +refs/heads/*:refs/heads/* --prune"
 
 - name: install jenkins jobs
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   raw: 'sh /provision/roles/jenkins/files/restoreAllJobs.sh'
   ignore_errors: yes
@@ -258,7 +258,7 @@
 - copy: src=id_rsa dest=/var/lib/jenkins/.ssh/id_rsa mode=0600 group=jenkins owner=jenkins
 
 - name: start jenkins deployment pipeline
-  sudo: yes
+  become: yes
   sudo_user: jenkins
   command: 'java -jar /tmp/jenkins-cli.jar -s http://localhost:8080/ build {{item}}'
   with_items:
@@ -277,4 +277,4 @@
 
 - name: add jenkins to docker group
   raw: gpasswd -a jenkins docker
-  sudo: yes
+  become: yes

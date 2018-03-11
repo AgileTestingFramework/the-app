@@ -11,7 +11,7 @@
   copy: src=ninjabot dest=/home/hubot group=hubot owner=hubot
 
 - name: Tweak proxy if needed
-  sudo: yes
+  become: yes
   sudo_user: hubot
   blockinfile:
     dest: /home/hubot/ninjabot/.env.template

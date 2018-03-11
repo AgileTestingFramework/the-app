@@ -38,7 +38,7 @@
     - dojo2
 
 - name: Put private key on all dojo users
-  sudo: yes
+  become: yes
   sudo_user: "{{ item }}"
   copy:
     dest: /home/{{item}}/.ssh/id_rsa
@@ -73,7 +73,7 @@
     - chromium-browser
 
 - name: install user profile for Chrome Firefox and Xfce
-  sudo: yes
+  become: yes
   sudo_user: "{{item}}"
   unarchive: src=dojo.profile.tgz dest=/home/{{item}} owner={{item}}
   with_items:
@@ -81,7 +81,7 @@
     - dojo2
 
 - name: create desktop background directory
-  sudo: yes
+  become: yes
   sudo_user: "{{item}}"
   file:
     dest: /home/{{item}}/Pictures/background
@@ -91,7 +91,7 @@
     - dojo2
 
 - name: copy desktop background
-  sudo: yes
+  become: yes
   sudo_user: "{{item}}"
   copy: src=dojo.jpg dest=/home/{{item}}/Pictures/background/dojo.jpg force=yes mode=700 owner={{item}}
   with_items:
@@ -102,13 +102,13 @@
   template:
     src: xfce4-desktop.xml
     dest: /home/{{item}}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
-  sudo: yes
+  become: yes
   sudo_user: "{{item}}"
   with_items:
     - dojo1
     - dojo2
 
-- sudo: yes
+- become: yes
   sudo_user: "{{item}}"
   file:
     path: "/home/{{item}}/.vnc"
@@ -120,7 +120,7 @@
     - dojo2
 
 - name: set vnc password
-  sudo: yes
+  become: yes
   sudo_user: "{{item}}"
   shell: "echo d0j04fun | vncpasswd -f > passwd && chmod 600 passwd"
   args:
