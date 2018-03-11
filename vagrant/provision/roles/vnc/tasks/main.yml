@@ -27,7 +27,7 @@
   register: id_rsa
 
 - name: create local dojo users .ssh directory
-  sudo: true
+  become: yes
   become_user: "{{ item }}"
   file:
     path: /home/{{item}}/.ssh
