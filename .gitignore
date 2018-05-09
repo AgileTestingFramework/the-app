@@ -4,3 +4,8 @@
 .idea
 **/.gradle
 **/build/
+.project
+.settings
+**/bin/
+.classpath
+**/.vagrant/
